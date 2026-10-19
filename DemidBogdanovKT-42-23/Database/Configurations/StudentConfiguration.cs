@@ -38,11 +38,6 @@ namespace DemidBogdanovKT_42_23.Database.Configurations
                 .HasColumnType(ColumnType.String).HasMaxLength(100)
                 .HasComment("Фамилия студента");
 
-            builder.Property(p => p.MiddleName)
-                .HasColumnName("c_student_middlename")
-                .HasColumnType(ColumnType.String).HasMaxLength(100)
-                .HasComment("Отчество студента");
-
             builder.Property(p => p.GroupId)
                 .IsRequired()
                 .HasColumnName("group_id")
@@ -57,6 +52,13 @@ namespace DemidBogdanovKT_42_23.Database.Configurations
 
             builder.ToTable(TableName)
                 .HasIndex(p => p.GroupId, $"idx_{TableName}_fk_f_group_id");
+
+            builder.Property(p => p.IsDeleted)
+                .IsRequired()
+                .HasColumnName("c_student_isdeleted")
+                .HasColumnType(ColumnType.Bool)
+                .HasDefaultValue(false)
+                .HasComment("Признак удаления");
 
             // Явная автоподгрузка связанной сущности
             builder.Navigation(p => p.Group)

@@ -21,6 +21,71 @@ namespace DemidBogdanovKT_42_23.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("DemidBogdanovKT_42_23.Models.Discipline", b =>
+                {
+                    b.Property<int>("DisciplineId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("discipline_id")
+                        .HasComment("Идентификатор дисциплины");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DisciplineId"));
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bool")
+                        .HasDefaultValue(false)
+                        .HasColumnName("c_discipline_isdeleted")
+                        .HasComment("Признак удаления");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar")
+                        .HasColumnName("c_discipline_name")
+                        .HasComment("Название дисциплины");
+
+                    b.HasKey("DisciplineId")
+                        .HasName("pk_cd_discipline_discipline_id");
+
+                    b.ToTable("cd_discipline", (string)null);
+                });
+
+            modelBuilder.Entity("DemidBogdanovKT_42_23.Models.Grade", b =>
+                {
+                    b.Property<int>("GradeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("grade_id")
+                        .HasComment("Идентификатор оценки");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("GradeId"));
+
+                    b.Property<int>("DisciplineId")
+                        .HasColumnType("integer")
+                        .HasColumnName("discipline_id")
+                        .HasComment("Идентификатор дисциплины");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("integer")
+                        .HasColumnName("student_id")
+                        .HasComment("Идентификатор студента");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int4")
+                        .HasColumnName("c_grade_value")
+                        .HasComment("Значение оценки");
+
+                    b.HasKey("GradeId")
+                        .HasName("pk_cd_grade_grade_id");
+
+                    b.HasIndex(new[] { "DisciplineId" }, "idx_cd_grade_fk_f_discipline_id");
+
+                    b.HasIndex(new[] { "StudentId" }, "idx_cd_grade_fk_f_student_id");
+
+                    b.ToTable("cd_grade", (string)null);
+                });
+
             modelBuilder.Entity("DemidBogdanovKT_42_23.Models.Group", b =>
                 {
                     b.Property<int>("GroupId")
@@ -31,17 +96,66 @@ namespace DemidBogdanovKT_42_23.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("GroupId"));
 
-                    b.Property<string>("GroupName")
+                    b.Property<int>("Course")
+                        .HasColumnType("int4")
+                        .HasColumnName("c_group_course")
+                        .HasComment("Курс");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bool")
+                        .HasDefaultValue(false)
+                        .HasColumnName("c_group_isdeleted")
+                        .HasComment("Признак удаления");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar")
                         .HasColumnName("c_group_name")
                         .HasComment("Название группы");
 
+                    b.Property<int>("SpecialtyId")
+                        .HasColumnType("integer")
+                        .HasColumnName("specialty_id")
+                        .HasComment("Идентификатор специальности");
+
                     b.HasKey("GroupId")
                         .HasName("pk_cd_group_group_id");
 
+                    b.HasIndex(new[] { "SpecialtyId" }, "idx_cd_group_fk_f_specialty_id");
+
                     b.ToTable("cd_group", (string)null);
+                });
+
+            modelBuilder.Entity("DemidBogdanovKT_42_23.Models.Specialty", b =>
+                {
+                    b.Property<int>("SpecialtyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("specialty_id")
+                        .HasComment("Идентификатор специальности");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SpecialtyId"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar")
+                        .HasColumnName("c_specialty_code")
+                        .HasComment("Код специальности");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar")
+                        .HasColumnName("c_specialty_title")
+                        .HasComment("Название специальности");
+
+                    b.HasKey("SpecialtyId")
+                        .HasName("pk_cd_specialty_specialty_id");
+
+                    b.ToTable("cd_specialty", (string)null);
                 });
 
             modelBuilder.Entity("DemidBogdanovKT_42_23.Models.Student", b =>
@@ -66,6 +180,13 @@ namespace DemidBogdanovKT_42_23.Migrations
                         .HasColumnName("group_id")
                         .HasComment("Идентификатор группы");
 
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bool")
+                        .HasDefaultValue(false)
+                        .HasColumnName("c_student_isdeleted")
+                        .HasComment("Признак удаления");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -73,19 +194,45 @@ namespace DemidBogdanovKT_42_23.Migrations
                         .HasColumnName("c_student_lastname")
                         .HasComment("Фамилия студента");
 
-                    b.Property<string>("MiddleName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar")
-                        .HasColumnName("c_student_middlename")
-                        .HasComment("Отчество студента");
-
                     b.HasKey("StudentId")
                         .HasName("pk_cd_student_student_id");
 
                     b.HasIndex(new[] { "GroupId" }, "idx_cd_student_fk_f_group_id");
 
                     b.ToTable("cd_student", (string)null);
+                });
+
+            modelBuilder.Entity("DemidBogdanovKT_42_23.Models.Grade", b =>
+                {
+                    b.HasOne("DemidBogdanovKT_42_23.Models.Discipline", "Discipline")
+                        .WithMany()
+                        .HasForeignKey("DisciplineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_f_discipline_id");
+
+                    b.HasOne("DemidBogdanovKT_42_23.Models.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_f_student_id");
+
+                    b.Navigation("Discipline");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("DemidBogdanovKT_42_23.Models.Group", b =>
+                {
+                    b.HasOne("DemidBogdanovKT_42_23.Models.Specialty", "Specialty")
+                        .WithMany()
+                        .HasForeignKey("SpecialtyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_f_specialty_id");
+
+                    b.Navigation("Specialty");
                 });
 
             modelBuilder.Entity("DemidBogdanovKT_42_23.Models.Student", b =>
