@@ -2,6 +2,7 @@ using DemidBogdanovKT_42_23.Database;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
+using DemidBogdanovKT_42_23.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ try
     builder.Services.AddSwaggerGen();
     builder.Services.AddDbContext<StudentDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    builder.Services.AddServices();  
 
     var app = builder.Build();
 
